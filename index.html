@@ -1,0 +1,124 @@
+<!doctype html>
+<html ng-app="TodoApp">
+<meta charset="utf-8">
+
+<head>
+    <title>Görev Yöneticisi</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <script src="todo.js"></script>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="todo.css">
+</head>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="page-title">
+                <img src="img/todo.png" height="90" width="90">
+                <span>GÖREV YÖNETİCİSİ</span>
+            </h2>
+        </div>
+    </div></div>
+
+
+<body>
+<div ng-controller="TodoCtrl" class="toDoContainer">
+<br><br>
+
+
+
+    <div class="createTask">
+        <form ng-submit="addTodo()" class="form-inline createForm">
+            <!-- ADD SUMMARY START-->
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="todoSummary" size="30" placeholder="Yapılacak yeni madde ekle" ng-click="endEditMode()">
+            </div>
+
+            <div class="form-group">
+                <select class="form-control priority" name="priority" ng-model="priority" ng-click="endEditMode()">
+                    <option value="8">Pazartesi</option>
+                    <option value="2">Salı</option>
+                    <option value="1">Çarşamba</option>
+                    <option value="4">Perşembe</option>
+                    <option value="5">Cuma</option>
+                    <option value="6">Cumartesi</option>
+                    <option value="7">Pazar</option>
+                </select>
+            </div>
+            <!-- ADD PRIORITY END-->
+            <!-- ADD DUE DATE START-->
+            <div class="form-group">
+                <input class="form-control datepicker" type="date" name="dueDate" ng-model="dueDate" placeholder="yyyy-MM-dd" min="2021-01-01" max="2021-12-31" required/>
+            </div>
+            <!-- ADD DUE DATE END-->
+            <!-- SUBMIT BTN -->
+            <button class="btn btn-primary" type="submit"> Ekle </button>
+            <!-- SUBMIT BTN -->
+        </form>
+        <span class="tasksLeft" >Tamamlanan İşler {{remaining()}}/{{todos.length}} </span>
+    </div>
+
+    <table class="table table-hover">
+
+        <tr>
+            <th>
+                <img src="img/important.png" height="40" width="40">
+                <a href="" ng-click="order('summary')">Yapılacaklar</a>
+                <span class="sortorder" ng-show="predicate === 'summary'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th>
+                <img src="img/clock.png" height="35" width="35">
+                <a href="" ng-click="order('priority')">Başlanacak Gün</a>
+                <span class="sortorder" ng-show="predicate === 'priority'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th>
+                <img src="img/calender.png" height="40" width="40">
+                <a href="" ng-click="order('dueDate')">Bitmesi Gereken Gün</a>
+                <span class="sortorder" ng-show="predicate === 'dueDate'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        <tr ng-repeat="todo in todos | orderBy:predicate:reverse" class="Bg{{todo.priority}}">
+            <!-- SUMMARY START-->
+            <td>
+                <input type="checkbox" class="todoCheckbox" ng-model="todo.done">
+                <span ng-click="edit($event)" class="done-{{todo.done}} todoSummary">{{todo.summary}}</span>
+                <form class="editForm disabled form-inline" ng-submit="editSubmit($event)">
+                    <div class="form-group ">
+                        <input class="form-control" type="text" size="30" value="{{todo.summary}}" />
+                    </div>
+                    <button class="btn btn-default" type="submit">save</button>
+                </form>
+            </td>
+
+            <td>
+                <select class="form-control priority" name="priority" ng-model="todo.priority" ng-change="saveToLocalStorage()" ng-click="endEditMode()">
+                    <option value="8">Pazartesi</option>
+                    <option value="2">Salı</option>
+                    <option value="1">Çarşamba</option>
+                    <option value="4">Perşembe</option>
+                    <option value="5">Cuma</option>
+                    <option value="6">Cumartesi</option>
+                    <option value="7">Pazar</option>
+                </select>
+            </td>
+
+            <td>
+                <input class="form-control datepicker" type="date" name="dueDate" ng-model="todo.dueDate" placeholder="yyyy-MM-dd" min="2021-01-01" max="2021-12-31" ng-change="saveToLocalStorage()" required ng-click="endEditMode()" />
+            </td>
+
+            <td>
+                <img ng-click="removeTask()" src="img/sil.jpg" class="removeBtn" height="40" width="40" alt="">
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+</body>
+
+</html>
